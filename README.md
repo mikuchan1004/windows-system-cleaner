@@ -1,7 +1,7 @@
 # 🚀 Windows System Cleaner 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat&logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
-[![VirusTotal](https://img.shields.io/badge/VirusTotal-Safe-brightgreen?style=flat&logo=virustotal&logoColor=white)](여기에_바이러스토탈_결과_URL을_넣으세요)
+[![VirusTotal](https://img.shields.io/badge/VirusTotal-Safe-brightgreen?style=flat&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file/5ed8f732d9dbc2ce00e95e99745b5a2f2c5aa292e46f022f6ee7e0755b9c6b90?nocache=1)
 [![GitHub release](https://img.shields.io/github/v/release/mikuchan1004/windows-system-cleaner?style=flat&logo=github&logoColor=white)](https://github.com/mikuchan1004/windows-system-cleaner/releases)
 [![Collaborated with Gemini](https://img.shields.io/badge/Collaborated%20with-Gemini-4285F4?logo=google-gemini&logoColor=white)](#)
 
