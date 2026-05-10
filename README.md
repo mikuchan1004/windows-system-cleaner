@@ -10,6 +10,10 @@
 > [!CAUTION]
 > **백신 오진 안내 (False Positive)**
 > 시스템 최적화 및 파일 삭제 로직으로 인해 일부 백신(Avast, AVG, Cynet 등)에서 경고가 발생할 수 있습니다. 본 프로그램은 오픈 소스로 모든 코드가 공개되어 있으며, 어떠한 악성 코드도 포함하고 있지 않습니다. 불안하신 분은 소스 코드를 직접 검토 후 빌드하여 사용해 주세요.
+
+> [!NOTE]
+> **Microsoft Defender 검사 완료**
+> 본 프로그램은 Windows Defender에서 안전함(Clean)을 확인받았습니다. 다만, 서명이 없는 개인 제작 도구 특성상 일부 외부 백신(Avast 등)에서 오진이 발생할 수 있습니다.
 ---
 
 <img width="404" height="572" alt="스크린샷 2026-05-10 204513" src="https://github.com/user-attachments/assets/6566e3d6-ba09-4791-bb27-c98fa5063739" />
