@@ -1,12 +1,15 @@
 # 🚀 Windows System Cleaner 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat&logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
-[![VirusTotal](https://img.shields.io/badge/VirusTotal-Safe-brightgreen?style=flat&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file/5ed8f732d9dbc2ce00e95e99745b5a2f2c5aa292e46f022f6ee7e0755b9c6b90?nocache=1)
+[![VirusTotal](https://img.shields.io/badge/VirusTotal-4%20Warnings-orange?style=flat&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file-analysis/OTE5OTAwNGUyZWFkM2E4Njg3YWJiNTlmZDJjMWVjZGM6MTc3ODQxNDEyNA==)
 [![GitHub release](https://img.shields.io/github/v/release/mikuchan1004/windows-system-cleaner?style=flat&logo=github&logoColor=white)](https://github.com/mikuchan1004/windows-system-cleaner/releases)
 [![Collaborated with Gemini](https://img.shields.io/badge/Collaborated%20with-Gemini-4285F4?logo=google-gemini&logoColor=white)](#)
 
 불필요한 임시 파일들을 안전하게 정리해주는 프로그램입니다.
 
+> [!CAUTION]
+> **백신 오진 안내 (False Positive)**
+> 시스템 최적화 및 파일 삭제 로직으로 인해 일부 백신(Avast, AVG, Cynet 등)에서 경고가 발생할 수 있습니다. 본 프로그램은 오픈 소스로 모든 코드가 공개되어 있으며, 어떠한 악성 코드도 포함하고 있지 않습니다. 불안하신 분은 소스 코드를 직접 검토 후 빌드하여 사용해 주세요.
 ---
 
 <img width="404" height="572" alt="스크린샷 2026-05-10 204513" src="https://github.com/user-attachments/assets/6566e3d6-ba09-4791-bb27-c98fa5063739" />
