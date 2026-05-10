@@ -1,0 +1,64 @@
+﻿<Window x:Class="WindowsSystemCleaner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Windows 시스템 클리너" 
+        Height="580" Width="420" 
+        ResizeMode="NoResize" 
+        Background="#121212"
+        WindowStartupLocation="CenterScreen" Icon="/Sparkle.png"
+        Closed="Window_Closed">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,40,0,20">
+            <TextBlock Text="⚡" FontSize="50" HorizontalAlignment="Center">
+                <TextBlock.Effect>
+                    <DropShadowEffect BlurRadius="20" Color="Yellow" ShadowDepth="0" Opacity="0.4"/>
+                </TextBlock.Effect>
+            </TextBlock>
+            <TextBlock Text="시스템 클리너" FontSize="28" FontWeight="Bold" Foreground="#00ADB5" HorizontalAlignment="Center"/>
+            <TextBlock Text="불필요한 임시 파일을 모두 정리하여 최적화합니다." FontSize="12" Foreground="#888" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+        </StackPanel>
+        <Border Grid.Row="1" Background="#121212" Margin="30,10" CornerRadius="8" BorderBrush="#333" BorderThickness="1">
+            <ScrollViewer x:Name="Scroller" VerticalScrollBarVisibility="Auto">
+                <TextBlock x:Name="LogText" 
+                   Foreground="#00ADB5" 
+                   FontFamily="Consolas" 
+                   FontSize="12" 
+                   LineHeight="18"
+                   Margin="15" 
+                   TextWrapping="Wrap" 
+                   Text="분석 대기 중..."/>
+            </ScrollViewer>
+        </Border>
+
+        <StackPanel Grid.Row="2" Margin="0,10,0,25">
+            <ProgressBar x:Name="PBar" Width="360" Height="8" Margin="0,0,0,20" 
+                         Background="#222" Foreground="#00ADB5" BorderThickness="0"
+                         Minimum="0" Maximum="100"/>
+
+            <Button x:Name="BtnStart" Content="✨ 원클릭 정리 시작" 
+                    Width="360" Height="55"
+                    Background="#00ADB5" Foreground="White" FontWeight="Bold" FontSize="18"
+                    BorderThickness="0" Cursor="Hand" Click="BtnStart_Click">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </StackPanel>
+
+        <StatusBar Grid.Row="3" Background="#1E1E1E" Foreground="#888" BorderThickness="0,1,0,0" BorderBrush="#333">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusMsg" Text="준비 완료" FontSize="11" Margin="10,0"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>
