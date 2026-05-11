@@ -1,4 +1,4 @@
-# 🚀 Windows System Cleaner 
+# ✨ Windows System Cleaner 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat&logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
 [![VirusTotal](https://img.shields.io/badge/VirusTotal-4%20Warnings-orange?style=flat&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file-analysis/OTE5OTAwNGUyZWFkM2E4Njg3YWJiNTlmZDJjMWVjZGM6MTc3ODQxNDEyNA==)
