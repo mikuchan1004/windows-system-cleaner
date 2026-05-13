@@ -57,23 +57,23 @@ namespace WindowsSystemCleaner
 
         private void StartCleaning(IProgress<string> progress)
         {
-            // 1. 사용자 임시 파일 (15%)
+            // 1. 사용자 임시 파일 (10%)
             CleanDirectory(Path.GetTempPath(), "사용자 임시 파일", progress);
-            UpdateProgress(15);
+            UpdateProgress(10);
 
-            // 2. 시스템 임시 파일 (30%)
+            // 2. 시스템 임시 파일 (20%)
             CleanDirectory(@"C:\Windows\Temp", "시스템 임시 파일", progress);
+            UpdateProgress(20);
+
+            // 3. 프리패치 (30%)
+            CleanDirectory(@"C:\Windows\Prefetch", "시스템 프리패치", progress);
             UpdateProgress(30);
 
-            // 3. 프리패치 (45%)
-            CleanDirectory(@"C:\Windows\Prefetch", "시스템 프리패치", progress);
+            // 4. 업데이트 캐시 (45%) - 서비스 중지/시작 시간이 있으므로 비중 증가
+            CleanUpdateCache(progress);
             UpdateProgress(45);
 
-            // 4. 업데이트 캐시 (60%)
-            CleanUpdateCache(progress);
-            UpdateProgress(60);
-
-            // 5. 디스코드 캐시 (75%)
+            // 5. 디스코드 캐시 (55%)
             string discordBase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "discord");
             string[] discordTargets = ["Cache", "Code Cache", "GPUCache"];
             foreach (var target in discordTargets)
@@ -81,10 +81,14 @@ namespace WindowsSystemCleaner
                 string fullPath = Path.Combine(discordBase, target);
                 if (Directory.Exists(fullPath)) CleanDirectory(fullPath, $"디스코드 {target}", progress);
             }
-            UpdateProgress(75);
+            UpdateProgress(55);
 
-            // 6. 프로젝트 자동 감지 및 정리 (100%)
+            // 6. 프로젝트 자동 감지 및 정리 (80%) - 탐색 범위가 넓으므로 비중 크게 할당
             AutoCleanProjects(progress);
+            UpdateProgress(80);
+
+            // 7. 시스템 고급 정리 (100%) - 배달 최적화 및 WinSxS(DISM) 소탕
+            AdvancedSystemCleanup(progress);
             UpdateProgress(100);
         }
 
@@ -97,31 +101,56 @@ namespace WindowsSystemCleaner
                 DirectoryInfo di = new(path);
                 int count = 0;
 
-                foreach (FileInfo file in di.GetFiles())
+                // 하위 모든 파일을 검색하여 하나씩 삭제 시도
+                foreach (FileInfo file in di.GetFiles("*", SearchOption.AllDirectories))
                 {
                     try
                     {
                         long fileSize = file.Length;
-                        file.Delete();
-                        _totalSavedSize += fileSize;
+                        file.Delete(); // 실제 삭제
+                        _totalSavedSize += fileSize; // ★삭제 성공 시에만 용량 합산
                         count++;
                     }
-                    catch { }
+                    catch { /* 점유 중인 파일은 합산하지 않고 패스 */ }
                 }
 
-                foreach (DirectoryInfo dir in di.GetDirectories())
+                // 비어있는 폴더들 정리
+                foreach (DirectoryInfo subDir in di.GetDirectories("*", SearchOption.AllDirectories))
                 {
-                    try
-                    {
-                        _totalSavedSize += GetDirectorySize(dir);
-                        dir.Delete(true);
-                        count++;
-                    }
-                    catch { }
+                    try { if (subDir.Exists) subDir.Delete(true); } catch { }
                 }
                 progress.Report($" -> {count}개의 항목을 처리했습니다.");
             }
             catch (Exception ex) { progress.Report($" -> 오류: {ex.Message}"); }
+        }
+
+        private void AdvancedSystemCleanup(IProgress<string> progress)
+        {
+            // A. 배달 최적화 캐시 직접 공략
+            string doPath = @"C:\Windows\ServiceProfiles\NetworkService\AppData\Local\Microsoft\Windows\DeliveryOptimization\Cache";
+            if (Directory.Exists(doPath))
+            {
+                CleanDirectory(doPath, "배달 최적화 캐시", progress);
+            }
+
+            // B. WinSxS 컴포넌트 스토어 정리 (디스크 정리의 1.4GB 범인)
+            progress.Report("[고급] WinSxS 컴포넌트 스토어 최적화 중...");
+            try
+            {
+                var psi = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "dism.exe",
+                    Arguments = "/online /cleanup-image /startcomponentcleanup /resetbase",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    Verb = "runas" // 관리자 권한 실행
+                };
+
+                using var process = System.Diagnostics.Process.Start(psi);
+                process?.WaitForExit();
+                progress.Report(" -> 시스템 컴포넌트 최적화 완료.");
+            }
+            catch (Exception ex) { progress.Report($" -> DISM 실행 오류: {ex.Message}"); }
         }
 
         private void AutoCleanProjects(IProgress<string> progress)
@@ -190,17 +219,6 @@ namespace WindowsSystemCleaner
                 }
                 catch { }
             }
-        }
-
-        private static long GetDirectorySize(DirectoryInfo di)
-        {
-            long size = 0;
-            try
-            {
-                foreach (FileInfo fi in di.GetFiles("*", SearchOption.AllDirectories)) size += fi.Length;
-            }
-            catch { }
-            return size;
         }
 
         private void CleanUpdateCache(IProgress<string> progress)
