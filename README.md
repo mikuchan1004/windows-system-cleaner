@@ -1,7 +1,7 @@
 # ✨ Windows System Cleaner 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat&logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
-[![VirusTotal](https://img.shields.io/badge/VirusTotal-4%20Warnings-orange?style=flat&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file-analysis/OTE5OTAwNGUyZWFkM2E4Njg3YWJiNTlmZDJjMWVjZGM6MTc3ODQxNDEyNA==)
+[![VirusTotal](https://img.shields.io/badge/VirusTotal-5%20Warnings-orange?style=flat&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file/2561d708534185c9c1f4d2602fc1b9e441199c64e6477045fca84b9c951448ed?nocache=1)
 [![GitHub release](https://img.shields.io/github/v/release/mikuchan1004/windows-system-cleaner?style=flat&logo=github&logoColor=white)](https://github.com/mikuchan1004/windows-system-cleaner/releases)
 [![Collaborated with Gemini](https://img.shields.io/badge/Collaborated%20with-Gemini-4285F4?logo=google-gemini&logoColor=white)](#)
 
@@ -16,7 +16,8 @@
 > 본 프로그램은 Windows Defender에서 안전함(Clean)을 확인받았습니다. 다만, 서명이 없는 개인 제작 도구 특성상 일부 외부 백신(Avast 등)에서 오진이 발생할 수 있습니다.
 ---
 
-<img width="404" height="572" alt="스크린샷 2026-05-10 204513" src="https://github.com/user-attachments/assets/6566e3d6-ba09-4791-bb27-c98fa5063739" />
+<img width="403" height="571" alt="image" src="https://github.com/user-attachments/assets/8d5f7395-741c-4d66-9161-43a0762e831d" />
+
 
 ## 🛠 주요 기능
 - **비주얼 스튜디오 청소**: 개발 중 발생하는 `bin`, `obj`, `.vs` 폴더 등 불필요한 빌드 아티팩트 제거
