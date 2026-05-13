@@ -34,7 +34,7 @@
                    LineHeight="18"
                    Margin="15" 
                    TextWrapping="Wrap" 
-                   Text="분석 대기 중..."/>
+                   Text="안녕하세요! 시스템 최적화를 시작해볼까요?"/>
             </ScrollViewer>
         </Border>
 
