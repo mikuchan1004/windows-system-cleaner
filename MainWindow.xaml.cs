@@ -1,15 +1,14 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.ServiceProcess;
-using System.Linq; // 추가: Any(), Contains() 사용을 위해 필요
+using System.Linq;
 
 namespace WindowsSystemCleaner
 {
     public partial class MainWindow : Window
     {
-        // 1. 변수 선언은 오직 이것 하나뿐이어야 합니다!
         private long _totalSavedSize = 0;
 
         public MainWindow()
@@ -23,6 +22,7 @@ namespace WindowsSystemCleaner
             LogText.Text = "시스템 분석 및 정리 시작...\n";
             _totalSavedSize = 0;
             PBar.Value = 0;
+            StatusMsg.Text = "정리를 준비하는 중...";
 
             var progress = new Progress<string>(msg => {
                 LogText.Text += $"{msg}\n";
@@ -37,7 +37,7 @@ namespace WindowsSystemCleaner
             LogText.Text += $"    정리 완료: {formattedSize} 확보\n";
             LogText.Text += new string('=', 30) + "\n";
 
-            StatusMsg.Text = $"최종 확보 용량: {formattedSize}";
+            StatusMsg.Text = $"최종 확보 용량: {formattedSize} (작업 완료)";
             Scroller.ScrollToBottom();
             BtnStart.IsEnabled = true;
         }
@@ -59,19 +59,19 @@ namespace WindowsSystemCleaner
         {
             // 1. 사용자 임시 파일 (10%)
             CleanDirectory(Path.GetTempPath(), "사용자 임시 파일", progress);
-            UpdateProgress(10);
+            UpdateProgress(10, "사용자 임시 파일 정리 완료");
 
             // 2. 시스템 임시 파일 (20%)
             CleanDirectory(@"C:\Windows\Temp", "시스템 임시 파일", progress);
-            UpdateProgress(20);
+            UpdateProgress(20, "시스템 임시 파일 정리 완료");
 
             // 3. 프리패치 (30%)
             CleanDirectory(@"C:\Windows\Prefetch", "시스템 프리패치", progress);
-            UpdateProgress(30);
+            UpdateProgress(30, "시스템 프리패치 정리 완료");
 
-            // 4. 업데이트 캐시 (45%) - 서비스 중지/시작 시간이 있으므로 비중 증가
+            // 4. 업데이트 캐시 (45%)
             CleanUpdateCache(progress);
-            UpdateProgress(45);
+            UpdateProgress(45, "Windows 업데이트 캐시 정리 완료");
 
             // 5. 디스코드 캐시 (55%)
             string discordBase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "discord");
@@ -81,59 +81,80 @@ namespace WindowsSystemCleaner
                 string fullPath = Path.Combine(discordBase, target);
                 if (Directory.Exists(fullPath)) CleanDirectory(fullPath, $"디스코드 {target}", progress);
             }
-            UpdateProgress(55);
+            UpdateProgress(55, "디스코드 캐시 소탕 완료");
 
-            // 6. 프로젝트 자동 감지 및 정리 (80%) - 탐색 범위가 넓으므로 비중 크게 할당
+            // 6. 프로젝트 자동 감지 및 정리 (80%)
             AutoCleanProjects(progress);
-            UpdateProgress(80);
+            UpdateProgress(80, "개발 프로젝트 찌꺼기 정리 완료");
 
-            // 7. 시스템 고급 정리 (100%) - 배달 최적화 및 WinSxS(DISM) 소탕
+            // 7. 시스템 고급 정리 (100%)
             AdvancedSystemCleanup(progress);
-            UpdateProgress(100);
+            UpdateProgress(100, "시스템 컴포넌트 최적화 완료");
         }
 
+        // [핵심 전면 수정] SearchOption.AllDirectories 대신 안전한 재귀 탐색 구조 채택
         private void CleanDirectory(string path, string label, IProgress<string> progress)
         {
             progress.Report($"[작업] {label} 정리 중...");
             try
             {
                 if (!Directory.Exists(path)) return;
-                DirectoryInfo di = new(path);
+                
                 int count = 0;
-
-                // 하위 모든 파일을 검색하여 하나씩 삭제 시도
-                foreach (FileInfo file in di.GetFiles("*", SearchOption.AllDirectories))
-                {
-                    try
-                    {
-                        long fileSize = file.Length;
-                        file.Delete(); // 실제 삭제
-                        _totalSavedSize += fileSize; // ★삭제 성공 시에만 용량 합산
-                        count++;
-                    }
-                    catch { /* 점유 중인 파일은 합산하지 않고 패스 */ }
-                }
-
-                // 비어있는 폴더들 정리
-                foreach (DirectoryInfo subDir in di.GetDirectories("*", SearchOption.AllDirectories))
-                {
-                    try { if (subDir.Exists) subDir.Delete(true); } catch { }
-                }
+                SafeCleanDirectoryRecursive(new DirectoryInfo(path), ref count);
+                
                 progress.Report($" -> {count}개의 항목을 처리했습니다.");
             }
             catch (Exception ex) { progress.Report($" -> 오류: {ex.Message}"); }
         }
 
+        // 권한 거부, 점유 중 에러를 완벽히 격리하는 재귀 메서드
+        private void SafeCleanDirectoryRecursive(DirectoryInfo di, ref int count)
+        {
+            // 1. 현재 폴더 안의 파일들 안전하게 삭제 시도
+            try
+            {
+                foreach (FileInfo file in di.GetFiles())
+                {
+                    try
+                    {
+                        long fileSize = file.Length;
+                        file.Delete(); 
+                        _totalSavedSize += fileSize; 
+                        count++;
+                    }
+                    catch { /* 사용 중이거나 엑세스 거부된 파일은 쿨하게 패스 */ }
+                }
+            }
+            catch { /* 폴더 자체에 접근 권한이 없으면 통째로 패스 */ return; }
+
+            // 2. 하위 폴더들을 하나씩 안전하게 탐색 (여기서 예외가 터져도 다른 하위 폴더는 계속 진행됨)
+            try
+            {
+                foreach (DirectoryInfo subDir in di.GetDirectories())
+                {
+                    // 재귀 호출로 더 깊은 곳 소탕
+                    SafeCleanDirectoryRecursive(subDir, ref count);
+
+                    // 하위 폴더 내부가 비워졌다면 폴더 자체 삭제 시도
+                    try
+                    {
+                        if (subDir.Exists) subDir.Delete(false); // 내부가 진짜 비었을 때만 삭제
+                    }
+                    catch { /* 지울 수 없는 상태면 패스 */ }
+                }
+            }
+            catch { /* 하위 폴더 목록을 읽어오지 못하는 권한 에러 처리 */ }
+        }
+
         private void AdvancedSystemCleanup(IProgress<string> progress)
         {
-            // A. 배달 최적화 캐시 직접 공략
             string doPath = @"C:\Windows\ServiceProfiles\NetworkService\AppData\Local\Microsoft\Windows\DeliveryOptimization\Cache";
             if (Directory.Exists(doPath))
             {
                 CleanDirectory(doPath, "배달 최적화 캐시", progress);
             }
 
-            // B. WinSxS 컴포넌트 스토어 정리 (디스크 정리의 1.4GB 범인)
             progress.Report("[고급] WinSxS 컴포넌트 스토어 최적화 중...");
             try
             {
@@ -143,7 +164,7 @@ namespace WindowsSystemCleaner
                     Arguments = "/online /cleanup-image /startcomponentcleanup /resetbase",
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    Verb = "runas" // 관리자 권한 실행
+                    Verb = "runas"
                 };
 
                 using var process = System.Diagnostics.Process.Start(psi);
@@ -157,8 +178,8 @@ namespace WindowsSystemCleaner
         {
             string[] candidatePaths = [
                 @"F:\Project",
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "source", "repos"),
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Projects")
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "source", "repos"),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Projects")
             ];
 
             string[] targets = [".vs", "bin", "obj"];
@@ -170,63 +191,71 @@ namespace WindowsSystemCleaner
                 try
                 {
                     DirectoryInfo root = new(rootPath);
-                    foreach (var dir in root.GetDirectories("*", SearchOption.AllDirectories))
-                    {
-                        if (targets.Contains(dir.Name.ToLower()))
-                        {
-                            // [핵심 추가] 현재 작업 중인 프로젝트 폴더는 절대 건드리지 않음
-                            // 이게 빠지면 bin/obj 안의 NuGet 참조 정보가 날아가서 에러가 터집니다.
-                            if (dir.FullName.Contains("WindowsSystemCleaner"))
-                            {
-                                continue;
-                            }
-
-                            progress.Report($"[정리] {dir.FullName} 내부 소탕 중...");
-                            CleanDirectoryContents(dir);
-                        }
-                    }
+                    // 프로젝트 폴더 찾기는 최상위나 특정 깊이에서만 일어날 확률이 높지만, 
+                    // 안전을 위해 여기서도 하위 디렉토리를 안전하게 열어봅니다.
+                    CleanProjectDirectoriesSafe(root, targets, progress);
                 }
                 catch (Exception ex) { progress.Report($" -> 탐색 중 오류: {ex.Message}"); }
             }
         }
 
+        // 프로젝트 탐색 시에도 권한 에러로 튕기는 것을 완벽 차단
+        private void CleanProjectDirectoriesSafe(DirectoryInfo di, string[] targets, IProgress<string> progress)
+        {
+            try
+            {
+                foreach (var subDir in di.GetDirectories())
+                {
+                    if (targets.Contains(subDir.Name.ToLower()))
+                    {
+                        // 현재 작업 프로그램 보호
+                        if (subDir.FullName.Contains("WindowsSystemCleaner")) continue;
+
+                        progress.Report($"[정리] {subDir.FullName} 내부 소탕 중...");
+                        CleanDirectoryContents(subDir);
+                    }
+                    else
+                    {
+                        // 대상 폴더가 아니면 하위로 더 내려가서 검색
+                        CleanProjectDirectoriesSafe(subDir, targets, progress);
+                    }
+                }
+            }
+            catch { /* 접근 권한 없는 개발 폴더는 스킵 */ }
+        }
+
         private void CleanDirectoryContents(DirectoryInfo di)
         {
-            // 1. 파일 삭제 시도
-            foreach (FileInfo file in di.GetFiles())
+            try
             {
-                try
+                foreach (FileInfo file in di.GetFiles())
                 {
-                    long size = file.Length;
-                    file.Delete();
-                    _totalSavedSize += size;
+                    try
+                    {
+                        long size = file.Length;
+                        file.Delete();
+                        _totalSavedSize += size;
+                    }
+                    catch { }
                 }
-                catch
-                {
-                    // 현재 VS가 사용 중인 파일(예: .suo, .db)은 여기서 자동으로 걸러짐
-                }
-            }
 
-            // 2. 하위 폴더 삭제 시도
-            foreach (DirectoryInfo subDir in di.GetDirectories())
-            {
-                try
+                foreach (DirectoryInfo subDir in di.GetDirectories())
                 {
-                    // 하위 폴더 내부를 먼저 비우고
-                    CleanDirectoryContents(subDir);
-                    // 비워진 폴더 삭제 (사용 중이면 삭제 안 됨)
-                    subDir.Delete(true);
+                    try
+                    {
+                        CleanDirectoryContents(subDir);
+                        subDir.Delete(true);
+                    }
+                    catch { }
                 }
-                catch { }
             }
+            catch { }
         }
 
         private void CleanUpdateCache(IProgress<string> progress)
         {
             progress.Report("[작업] Windows 업데이트 캐시 정리 중...");
             string path = @"C:\Windows\SoftwareDistribution\Download";
-
-            // 1. 변수를 미리 선언해야 try/finally 어디서든 접근 가능합니다.
             ServiceController sc = null;
 
             try
@@ -239,7 +268,6 @@ namespace WindowsSystemCleaner
 
                 sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
 
-                // 기존에 잘 작동하던 정리 로직 호출
                 CleanDirectory(path, "업데이트 다운로드 캐시", progress);
 
                 progress.Report(" -> 업데이트 서비스 재시작 중...");
@@ -251,7 +279,6 @@ namespace WindowsSystemCleaner
             }
             finally
             {
-                // 2. 여기서 sc를 안전하게 닫아줍니다.
                 if (sc != null)
                 {
                     sc.Close();
@@ -260,17 +287,18 @@ namespace WindowsSystemCleaner
             }
         }
 
-        private void UpdateProgress(int value)
+        // 상태창 메시지도 함께 업데이트하도록 개선
+        private void UpdateProgress(int value, string statusText)
         {
             Dispatcher.Invoke(() => {
                 PBar.Value = value;
-                StatusMsg.Text = $"진행률: {value}%";
+                StatusMsg.Text = $"진행률: {value}% | {statusText}";
             });
         }
+
         [System.Diagnostics.DebuggerNonUserCode]
         private void Window_Closed(object sender, EventArgs e)
         {
-            // 디버거가 이 메서드 안에서 발생하는 일에 개입하지 못하게 차단
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
     }
