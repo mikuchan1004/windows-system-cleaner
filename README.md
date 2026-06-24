@@ -16,7 +16,7 @@
 > 본 프로그램은 Windows Defender에서 안전함(Clean)을 확인받았습니다. 다만, 서명이 없는 개인 제작 도구 특성상 일부 외부 백신(Avast 등)에서 오진이 발생할 수 있습니다.
 ---
 
-<img width="403" height="571" alt="image" src="https://github.com/user-attachments/assets/8d5f7395-741c-4d66-9161-43a0762e831d" />
+<img width="419" height="616" alt="image" src="https://github.com/user-attachments/assets/157d8690-233f-4d35-b3fd-64300cb9a2ca" />
 
 
 ## 🛠 주요 기능
