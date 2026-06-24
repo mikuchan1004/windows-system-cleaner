@@ -1,4 +1,4 @@
-<Window x:Class="WindowsSystemCleaner.MainWindow"
+﻿<Window x:Class="WindowsSystemCleaner.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Windows 시스템 클리너" 
