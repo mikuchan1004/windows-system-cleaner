@@ -1,7 +1,7 @@
 # ✨ Windows System Cleaner 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat&logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
-[![VirusTotal](https://img.shields.io/badge/VirusTotal-5%20Warnings-orange?style=flat&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file/2561d708534185c9c1f4d2602fc1b9e441199c64e6477045fca84b9c951448ed?nocache=1)
+[![VirusTotal](https://img.shields.io/badge/VirusTotal-1%20Warning-green?style=flat&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file/56a2c666ff63d81a82fe06e655d81f3a661f2bebe1e9022db47f45038ee89ec0)
 [![GitHub release](https://img.shields.io/github/v/release/mikuchan1004/windows-system-cleaner?style=flat&logo=github&logoColor=white)](https://github.com/mikuchan1004/windows-system-cleaner/releases)
 [![Collaborated with Gemini](https://img.shields.io/badge/Collaborated%20with-Gemini-4285F4?logo=google-gemini&logoColor=white)](#)
 
