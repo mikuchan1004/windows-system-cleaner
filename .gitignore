@@ -140,6 +140,7 @@ ipch/
 *.cachefile
 *.VC.db
 *.VC.VC.opendb
+.vscode
 
 # Visual Studio profiler
 *.psess
