@@ -1,22 +1,22 @@
 # ✨ Windows System Cleaner 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat&logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
-[![VirusTotal](https://img.shields.io/badge/VirusTotal-1%20Warning-green?style=flat&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file/56a2c666ff63d81a82fe06e655d81f3a661f2bebe1e9022db47f45038ee89ec0)
+[![VirusTotal](https://img.shields.io/badge/VirusTotal-5%20Warnings-orange?style=flat&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file/2561d708534185c9c1f4d2602fc1b9e441199c64e6477045fca84b9c951448ed?nocache=1)
 [![GitHub release](https://img.shields.io/github/v/release/mikuchan1004/windows-system-cleaner?style=flat&logo=github&logoColor=white)](https://github.com/mikuchan1004/windows-system-cleaner/releases)
 [![Collaborated with Gemini](https://img.shields.io/badge/Collaborated%20with-Gemini-4285F4?logo=google-gemini&logoColor=white)](#)
 
 불필요한 임시 파일들을 안전하게 정리해주는 프로그램입니다.
 
 > [!CAUTION]
-> ### 🛡️ 백신 오진 안내 (False Positive)
-> 
-> * **핵심 요약:** Microsoft Defender를 포함한 국내외 주요 메이저 백신 검사는 모두 **안전함(Clean)**을 확인받았습니다.
-> * **오진 발생 원인:** 단일 실행 파일(`.exe`) 패키징 구조와 디지털 서명이 없는 개인 제작 도구 특성상, 일부 특정 해외 백신(**Bkav Pro**)에서 기계적인 오진(1건)이 발생할 수 있습니다.
-> * **안내 사항:** 본 프로그램은 모든 소스 코드가 투명하게 공개된 오픈 소스이며, 어떠한 악성 코드도 포함하고 있지 않으니 안심하고 사용하셔도 됩니다. 불안하신 분은 소스 코드를 직접 검토 후 빌드하여 사용해 주세요.
+> **백신 오진 안내 (False Positive)**
+> 시스템 최적화 및 파일 삭제 로직으로 인해 일부 백신(Avast, AVG, Cynet 등)에서 경고가 발생할 수 있습니다. 본 프로그램은 오픈 소스로 모든 코드가 공개되어 있으며, 어떠한 악성 코드도 포함하고 있지 않습니다. 불안하신 분은 소스 코드를 직접 검토 후 빌드하여 사용해 주세요.
 
-## 🖼️ 스크린샷
+> [!NOTE]
+> **Microsoft Defender 검사 완료**
+> 본 프로그램은 Windows Defender에서 안전함(Clean)을 확인받았습니다. 다만, 서명이 없는 개인 제작 도구 특성상 일부 외부 백신(Avast 등)에서 오진이 발생할 수 있습니다.
+---
 
-<img width="419" height="616" alt="image" src="https://github.com/user-attachments/assets/157d8690-233f-4d35-b3fd-64300cb9a2ca" />
+<img width="403" height="571" alt="image" src="https://github.com/user-attachments/assets/8d5f7395-741c-4d66-9161-43a0762e831d" />
 
 
 ## 🛠 주요 기능
