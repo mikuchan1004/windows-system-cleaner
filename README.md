@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat&logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
 [![VirusTotal](https://img.shields.io/badge/VirusTotal-1%20Warning-green?style=flat&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file/56a2c666ff63d81a82fe06e655d81f3a661f2bebe1e9022db47f45038ee89ec0)
 [![GitHub release](https://img.shields.io/github/v/release/mikuchan1004/windows-system-cleaner?style=flat&logo=github&logoColor=white)](https://github.com/mikuchan1004/windows-system-cleaner/releases)
-[![Collaborated with Gemini](https://img.shields.io/badge/Collaborated%20with-Gemini-4285F4?logo=google-gemini&logoColor=white)](#)
+[![Collaborated with Gemini](https://img.shields.io/badge/Collaborated%20with-Gemini-4285F4?logo=google-gemini&logoColor=white)](https://gemini.google.com/)
 
 불필요한 임시 파일들을 안전하게 정리해주는 프로그램입니다.
 
