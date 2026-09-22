@@ -26,8 +26,7 @@
 
 ## 🖼️ 스크린샷 
 
-<img width="419" height="616" alt="612159818-3913e53a-c07c-48d1-919e-8452b6e09211" src="https://github.com/user-attachments/assets/b61199eb-f518-49c1-b53f-fa7f188425d7" />
-
+<img width="414" height="612" alt="image" src="https://github.com/user-attachments/assets/3d0a1f9b-afbf-46ce-a8ce-c6c6950c5068" />
 
 ## 🛠 주요 기능
 - **비주얼 스튜디오 청소**: 개발 중 발생하는 `bin`, `obj`, `.vs` 폴더 등 불필요한 빌드 아티팩트 제거
